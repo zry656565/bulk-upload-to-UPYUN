@@ -1,103 +1,33 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
-	<link rel="stylesheet" href="normalize.css">
-	<style>
-		form {
-			margin: 30px 0;
-		}
-		.submit {
-			display: inline-block;
-			width: 100px;
-			background: #02a3c6;
-			border: none;
-			color: #fff;
-			line-height: 40px;
-			text-align: center;
-			cursor: pointer;
-		}
-	</style>
-	<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<title>Bulk Upload to UPYUN</title>
+	<link rel="stylesheet" href="asset/main.css" />
 </head>
 <body>
 
-<form action="" id="demoForm1" method="POST" enctype="multipart/form-data">
-	<fieldset>
-		<legend>Demo 1</legend>
-		<input name="file" type="file">
-		<input type="hidden" id="policy" name="policy">
-		<input type="hidden" id="signature" name="signature">
-		<input type="submit" value="submit" class="submit">
-	</fieldset>
-</form>
+<h1>批量上传又拍云示例</h1>
+<ul>
+	<li>不需要经过服务器，直接使用又拍云的HTTP FORM API向它批量传输图片。</li>
+	<li>多选图片使用plupload插件</li>
+	<li>调用方式请看<a href="https://github.com/zry656565/bulk-upload-to-UPYUN">源码</a></li>
+	<li>源码解释请移步我的博客：<a href="http://jerryzou.com">http://jerryzou.com</a></li>
+</ul>
 
-<form id="demoForm2">
-	<fieldset>
-		<legend>Demo 2</legend>
-		<input name="file" type="file" id="file2">
-		<a id="submit2" class="submit">submit</a>
-	</fieldset>
-</form>
+<h3>文件列表：</h3>
+<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+<br />
 
-<!-- Demo 1 -->
-<script>
-	var options ={};
-	options.bucket = 'demonstration';
-	options['save-key'] = '/test/filename.txt';
-	options.expiration = Math.floor(new Date().getTime() / 1000) + 86400;
-	// ...
-	// 查看更多参数：http://docs.upyun.com/api/form_api/#表单API接口简介
-	var policy = window.btoa(JSON.stringify(options));
-	// 从 UPYUN 用户管理后台获取表单 API
-	var form_api_secret = '1+JY2ZqD5UVfw6hQ8EesYQO50Wo=';
-	// 计算签名
-	var signature = CryptoJS.MD5(policy + '&' + form_api_secret);
-	var form = document.getElementById('demoForm1');
-	// 设置表单请求地址
-	form.action = 'http://v0.api.upyun.com/' + options.bucket;
-	// 将 policy 和 signature 插入表单
-	document.getElementById('policy').value = policy;
-	document.getElementById('signature').value = signature;
-</script>
+<div id="container">
+	<a id="pickfiles" href="javascript:;">[选择文件...]</a>
+	<a id="uploadfiles" href="javascript:;">[上传文件...]</a>
+</div>
 
-
-<!-- Demo 2 -->
-<script>
-	var config = {
-		api: 'http://v0.api.upyun.com/',
-		bucket: 'demonstration',
-		// 空间的表单 API
-		form_api: '1+JY2ZqD5UVfw6hQ8EesYQO50Wo='
-	};
-	document.getElementById('submit2').onclick = function() {
-		var file = document.getElementById('file2').files[0];
-		if(!file) {
-            console.log('no file is selected');
-            return;
-        }
-       	// 计算 policy 和 signature 所需的参数
-       	// 详情见： http://docs.upyun.com/api/form_api/#表单API接口简介
-        var options = {
-			bucket: config.bucket,
-			expiration: Math.floor(new Date().getTime() / 1000) + 86400,
-			'save-key': file.name
-		};
-		var policy = window.btoa(JSON.stringify(options));
-		var signature = CryptoJS.MD5(policy + '&' + form_api_secret);
-        var data = new FormData();
-        data.append('policy', policy);
-        data.append('signature', signature);
-        data.append('file', file);
-        var request = new XMLHttpRequest();
-        request.open('POST', config.api + options.bucket);
-        request.onload = function(e) {
-        	console.log(request.response);
-        };
-        request.send(data);
-	};
-</script>
+<pre id="console"></pre>
 
 </body>
+<script src="lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="lib/md5.js"></script>
+<script src="asset/main.js"></script>
 </html>
