@@ -1,12 +1,12 @@
 var options = {
-	'bucket': 'demonstration',
-	'save-key': '/test/filename.txt',
+	'bucket': 'jerry-test-bucket',
+	'save-key': '/{year}/{mon}/{day}/{filemd5}{.suffix}',
 	'expiration': Math.floor(new Date().getTime() / 1000) + 86400
 };
 // 查看更多参数：http://docs.upyun.com/api/form_api/#表单API接口简介
 var policy = window.btoa(JSON.stringify(options));
 // 从 UPYUN 用户管理后台获取表单 API
-var form_api_secret = '1+JY2ZqD5UVfw6hQ8EesYQO50Wo=';
+var form_api_secret = 'uWXYXiFzo9SwavwderRAIyYJCjg=';
 // 计算签名
 var signature = md5(policy + '&' + form_api_secret);
 
@@ -48,7 +48,7 @@ var uploader = new plupload.Uploader({
 
 		FileUploaded: function(up, file, info) {
 			var response = JSON.parse(info.response);
-			console.log(response.url);
+			document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML += ' [Url]: http://jerry-test-bucket.b0.upaiyun.com' + response.url;
 		},
 
 		Error: function(up, err) {
